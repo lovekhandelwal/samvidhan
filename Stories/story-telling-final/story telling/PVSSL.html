@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Constitutional Trivia Game: Parliament vs State Legislature</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 100%;
+            max-width: 600px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s ease forwards;
+        }
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .card-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .card-header h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        .progress {
+            height: 100%;
+            background-color: #4caf50;
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+        .card-content {
+            margin-bottom: 20px;
+        }
+        .question {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option {
+            padding: 10px;
+            background-color: #e0e0e0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+        .option:hover {
+            background-color: #d0d0d0;
+        }
+        .option.correct {
+            background-color: #4caf50;
+            color: white;
+        }
+        .option.incorrect {
+            background-color: #f44336;
+            color: white;
+        }
+        .explanation {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+        }
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .next-btn, .restart-btn {
+            padding: 10px 20px;
+            background-color: #2196f3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .next-btn:hover, .restart-btn:hover {
+            background-color: #1976d2;
+            transform: scale(1.05);
+        }
+        .score, .category {
+            display: flex;
+            align-items: center;
+        }
+        .icon {
+            margin-right: 5px;
+        }
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="card-header">
+            <h2>Constitutional Trivia Game: Parliament vs State Legislature</h2>
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+        </div>
+        <div class="card-content" id="game-content">
+            <!-- Question and options will be inserted here -->
+        </div>
+        <div class="card-footer">
+            <div class="score">
+                <span class="icon">✅</span>
+                <span id="score-display">Score: 0/0</span>
+            </div>
+            <div class="category">
+                <span class="icon">❓</span>
+                <span id="category-display">Category: </span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const categories = ['Parliament vs State Legislature'];
+
+        const allQuestions = [
+            [
+                {
+                    category: 'Parliament vs State Legislature',
+                    question: "Which of the following is a unique power of the Parliament that State Legislatures do not possess?",
+                    options: ["Passing Money Bills", "Amending the Constitution", "Imposing taxes", "Passing no-confidence motions"],
+                    correctAnswer: 1,
+                    explanation: "While both Parliament and State Legislatures can pass Money Bills, impose taxes, and pass no-confidence motions, only the Parliament has the power to amend the Constitution of India as per Article 368. State Legislatures can only pass resolutions requesting Parliament to make constitutional amendments, but they cannot directly amend the Constitution themselves."
+                },
+                {
+                    category: 'Parliament vs State Legislature',
+                    question: "In the context of resolving deadlocks between two houses, what fundamental difference exists between Parliament and bicameral State Legislatures?",
+                    options: ["Parliament has no deadlock resolution mechanism", "State Legislatures always defer to their Lower House", "Parliament can conduct joint sessions, State Legislatures cannot", "State Legislatures have more effective resolution mechanisms"],
+                    correctAnswer: 2,
+                    explanation: "A key difference in deadlock resolution is that the Parliament can resolve deadlocks between the Lok Sabha and Rajya Sabha through a joint session as per Article 108 of the Constitution. However, this mechanism is not available to bicameral State Legislatures. In states with two houses, if a deadlock persists, the will of the Lower House (Legislative Assembly) generally prevails after a certain period, but there's no provision for a joint session like in Parliament."
+                },
+                {
+                    category: 'Parliament vs State Legislature',
+                    question: "How does the subject matter jurisdiction differ between Parliament and State Legislatures?",
+                    options: ["They have identical jurisdictions", "Parliament can legislate on any subject", "State Legislatures have wider jurisdiction", "Their jurisdictions are mutually exclusive"],
+                    correctAnswer: 1,
+                    explanation: "The subject matter jurisdiction of Parliament and State Legislatures is defined by the Seventh Schedule of the Indian Constitution, which provides Union, State, and Concurrent Lists. While State Legislatures can make laws on State and Concurrent List subjects, Parliament can legislate on any subject from any list. Moreover, under certain circumstances (like during a national emergency or with the consent of two or more states), Parliament can even legislate on State List subjects. This gives Parliament a wider and more flexible jurisdiction compared to State Legislatures."
+                },
+                {
+                    category: 'Parliament vs State Legislature',
+                    question: "What unique constitutional provision allows Parliament to create or abolish State Legislative Councils?",
+                    options: ["Article 168", "Article 169", "Article 170", "Article 171"],
+                    correctAnswer: 1,
+                    explanation: "Article 169 of the Indian Constitution gives Parliament the unique power to create or abolish State Legislative Councils. If a State Legislative Assembly passes a resolution to create or abolish its Legislative Council with a special majority, Parliament can then pass a law to that effect. This power demonstrates the superior position of Parliament in shaping the very structure of state legislatures, a power that state legislatures themselves do not possess."
+                },
+                {
+                    category: 'Parliament vs State Legislature',
+                    question: "In terms of financial powers, what key difference exists between Parliament and State Legislatures regarding the Consolidated Fund?",
+                    options: ["Only Parliament can withdraw from its Consolidated Fund", "State Legislatures have more control over their Consolidated Funds", "Parliament controls both Union and State Consolidated Funds", "No difference exists in their powers over respective Consolidated Funds"],
+                    correctAnswer: 2,
+                    explanation: "A crucial difference in financial powers is that Parliament has certain overriding powers over both the Consolidated Fund of India and the Consolidated Funds of States. While State Legislatures control withdrawals from their respective State Consolidated Funds, Parliament can make grants-in-aid to states from the Consolidated Fund of India (Article 275). Moreover, during a financial emergency proclaimed under Article 360, Parliament can direct reduction of salaries of persons serving the state, including judges of the High Court. This demonstrates Parliament's broader financial reach compared to State Legislatures."
+                }
+            ]
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let showExplanation = false;
+        let selectedAnswer = null;
+        let gameState = 'playing';
+        let categoryScores = {
+            'Parliament vs State Legislature': 0
+        };
+        let currentQuestionSet = 0;
+        let questions = allQuestions[0];
+
+        function updateUI() {
+            const gameContent = document.getElementById('game-content');
+            const progressBar = document.getElementById('progress');
+            const scoreDisplay = document.getElementById('score-display');
+            const categoryDisplay = document.getElementById('category-display');
+
+            if (gameState === 'playing') {
+                progressBar.style.width = `${(currentQuestion / questions.length) * 100}%`;
+                scoreDisplay.textContent = `Score: ${score}/${questions.length}`;
+                categoryDisplay.textContent = `Category: ${questions[currentQuestion].category}`;
+
+                let content = `
+                    <div class="question">${questions[currentQuestion].question}</div>
+                    <div class="options">
+                        ${questions[currentQuestion].options.map((option, index) => `
+                            <button class="option" onclick="handleAnswer(${index})" ${showExplanation ? 'disabled' : ''}>
+                                ${option}
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
+
+                if (showExplanation) {
+                    content += `
+                        <div class="explanation">
+                            <p><strong>Explanation:</strong></p>
+                            <p>${questions[currentQuestion].explanation}</p>
+                            <button class="next-btn" onclick="nextQuestion()">Next Question</button>
+                        </div>
+                    `;
+                }
+
+                gameContent.innerHTML = content;
+
+                // Animate options sliding in
+                const options = document.querySelectorAll('.option');
+                options.forEach((option, index) => {
+                    option.style.animation = `slideIn 0.5s ease forwards ${index * 0.1}s`;
+                });
+            } else {
+                let content = `
+                    <h3>Game Completed!</h3>
+                    <p>Your total score: ${score}/${questions.length}</p>
+                    ${categories.map(category => `
+                        <p>${category}: ${categoryScores[category]}/${questions.filter(q => q.category === category).length}</p>
+                    `).join('')}
+                    <button class="restart-btn" onclick="restartGame()">Play Again</button>
+                `;
+
+                gameContent.innerHTML = content;
+            }
+        }
+
+        function handleAnswer(selectedOption) {
+            if (showExplanation) return; // Prevent multiple selections
+            
+            selectedAnswer = selectedOption;
+            const options = document.querySelectorAll('.option');
+            options.forEach((option, index) => {
+                option.classList.remove('correct', 'incorrect');
+                option.style.transform = 'scale(1)';
+                if (index === selectedOption) {
+                    if (selectedOption === questions[currentQuestion].correctAnswer) {
+                        option.classList.add('correct');
+                        score++;
+                        categoryScores[questions[currentQuestion].category]++;
+                        option.style.transform = 'scale(1.05)';
+                    } else {
+                        option.classList.add('incorrect');
+                        option.style.transform = 'scale(0.95)';
+                    }
+                }
+            });
+            
+            // Always show the correct answer
+            options[questions[currentQuestion].correctAnswer].classList.add('correct');
+            
+            showExplanation = true;
+            updateUI();
+        }
+
+        function nextQuestion() {
+            showExplanation = false;
+            selectedAnswer = null;
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                updateUI();
+            } else {
+                gameState = 'finished';
+                updateUI();
+            }
+        }
+
+        function restartGame() {
+            currentQuestionSet = (currentQuestionSet + 1) % allQuestions.length;
+            questions = allQuestions[currentQuestionSet];
+            currentQuestion = 0;
+            score = 0;
+            showExplanation = false;
+            selectedAnswer = null;
+            gameState = 'playing';
+            categoryScores = {
+                'Parliament vs State Legislature': 0
+            };
+            updateUI();
+        }
+
+        // Initialize the game
+        updateUI();
+    </script>
+</body>
+</html>

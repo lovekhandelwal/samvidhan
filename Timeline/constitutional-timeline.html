@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Constitutional Amendments Timeline - Parts V and VI</title>
+    <style>
+
+        :root {
+             --body-color: linear-gradient(135deg, #001f3f 0%, #004080 100%);
+            --container-color: linear-gradient(135deg, #002b5c 0%, #003366 100%);
+            }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: var(--body-color);
+        }
+        .timeline {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background-color: #1a5f7a;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+        }
+        .container {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+            opacity: 0;
+            transition: all 0.5s ease-in-out;
+        }
+        .container::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: -17px;
+            background-color: white;
+            border: 4px solid #1a5f7a;
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+            transition: all 0.3s ease-in-out;
+        }
+        .container:hover::after {
+            background-color: #1a5f7a;
+            transform: scale(1.2);
+        }
+        .left {
+            left: 0;
+            transform: translateX(-50px);
+        }
+        .right {
+            left: 50%;
+            transform: translateX(50px);
+        }
+        .left::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            right: 30px;
+            border: medium solid #1a5f7a;
+            border-width: 10px 0 10px 10px;
+            border-color: transparent transparent transparent #1a5f7a;
+        }
+        .right::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            left: 30px;
+            border: medium solid #1a5f7a;
+            border-width: 10px 10px 10px 0;
+            border-color: transparent #1a5f7a transparent transparent;
+        }
+        .right::after {
+            left: -16px;
+        }
+        .content {
+            padding: 20px 30px;
+            background-color: white;
+            position: relative;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+        .content:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        h2 {
+            color: #1a5f7a;
+        }
+        .impact {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #e6f3f7;
+            border-radius: 5px;
+        }
+        @media screen and (max-width: 600px) {
+            .timeline::after {
+                left: 31px;
+            }
+            .container {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            .container::before {
+                left: 60px;
+                border: medium solid #1a5f7a;
+                border-width: 10px 10px 10px 0;
+                border-color: transparent #1a5f7a transparent transparent;
+            }
+            .left::after, .right::after {
+                left: 15px;
+            }
+            .right {
+                left: 0%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="timeline" id="timeline">
+        <!-- Timeline items will be inserted here by JavaScript -->
+    </div>
+
+    <script>
+        const amendments = [
+            {
+                year: 1956,
+                title: "7th Amendment",
+                description: "Reorganized states based on linguistic lines and introduced the Union Territories.",
+                impact: "Reshaped the political map of India and changed the structure of state governance."
+            },
+            {
+                year: 1960,
+                title: "11th Amendment",
+                description: "Changed the procedure for election of the Vice-President.",
+                impact: "Streamlined the Vice-Presidential election process."
+            },
+            {
+                year: 1973,
+                title: "31st Amendment",
+                description: "Increased the upper limit on the size of the Lok Sabha from 525 to 545 members.",
+                impact: "Ensured better representation in the lower house of Parliament."
+            },
+            {
+                year: 1975,
+                title: "38th Amendment",
+                description: "Made the declaration of Emergency immune from judicial review.",
+                impact: "Strengthened the Executive's emergency powers, later repealed by 44th Amendment."
+            },
+            {
+                year: 1978,
+                title: "44th Amendment",
+                description: "Restored safeguards against misuse of Emergency provisions and strengthened fundamental rights.",
+                impact: "Reformed emergency provisions and judicial review, strengthening democratic safeguards."
+            },
+            {
+                year: 1992,
+                title: "73rd and 74th Amendments",
+                description: "Gave constitutional status to Panchayati Raj Institutions and Municipalities.",
+                impact: "Strengthened local self-governance and decentralized power."
+            },
+            {
+                year: 2003,
+                title: "91st Amendment",
+                description: "Limited the size of Council of Ministers to 15% of the strength of the lower house.",
+                impact: "Aimed at preventing large, unwieldy cabinets and reducing administrative costs."
+            }
+        ];
+
+        function createTimelineItem(amendment, index) {
+            const container = document.createElement('div');
+            container.className = `container ${index % 2 === 0 ? 'left' : 'right'}`;
+            
+            const content = document.createElement('div');
+            content.className = 'content';
+            
+            content.innerHTML = `
+                <h2>${amendment.year}: ${amendment.title}</h2>
+                <p>${amendment.description}</p>
+                <div class="impact"><strong>Impact:</strong> ${amendment.impact}</div>
+            `;
+            
+            container.appendChild(content);
+            return container;
+        }
+
+        function populateTimeline() {
+            const timeline = document.getElementById('timeline');
+            amendments.forEach((amendment, index) => {
+                const item = createTimelineItem(amendment, index);
+                timeline.appendChild(item);
+            });
+        }
+
+        function addInteractivity() {
+            const containers = document.querySelectorAll('.container');
+            containers.forEach(container => {
+                const content = container.querySelector('.content');
+                const impact = container.querySelector('.impact');
+                content.addEventListener('click', () => {
+                    impact.style.display = impact.style.display === 'block' ? 'none' : 'block';
+                });
+            });
+        }
+
+        function animateTimeline() {
+            const containers = document.querySelectorAll('.container');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateX(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            containers.forEach(container => {
+                observer.observe(container);
+            });
+        }
+
+        window.onload = () => {
+            populateTimeline();
+            addInteractivity();
+            animateTimeline();
+        };
+    </script>
+</body>
+</html>

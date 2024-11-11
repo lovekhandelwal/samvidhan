@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Constitutional Trivia Game: Chief Minister Electoral Process</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 100%;
+            max-width: 600px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s ease forwards;
+        }
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .card-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .card-header h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        .progress {
+            height: 100%;
+            background-color: #4caf50;
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+        .card-content {
+            margin-bottom: 20px;
+        }
+        .question {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option {
+            padding: 10px;
+            background-color: #e0e0e0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+        .option:hover {
+            background-color: #d0d0d0;
+        }
+        .option.correct {
+            background-color: #4caf50;
+            color: white;
+        }
+        .option.incorrect {
+            background-color: #f44336;
+            color: white;
+        }
+        .explanation {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+        }
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .next-btn, .restart-btn {
+            padding: 10px 20px;
+            background-color: #2196f3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .next-btn:hover, .restart-btn:hover {
+            background-color: #1976d2;
+            transform: scale(1.05);
+        }
+        .score, .category {
+            display: flex;
+            align-items: center;
+        }
+        .icon {
+            margin-right: 5px;
+        }
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="card-header">
+            <h2>Constitutional Trivia Game: Chief Minister Electoral Process</h2>
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+        </div>
+        <div class="card-content" id="game-content">
+            <!-- Question and options will be inserted here -->
+        </div>
+        <div class="card-footer">
+            <div class="score">
+                <span class="icon">✅</span>
+                <span id="score-display">Score: 0/0</span>
+            </div>
+            <div class="category">
+                <span class="icon">❓</span>
+                <span id="category-display">Category: </span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const categories = ['Chief Minister Electoral Process'];
+
+        const allQuestions = [
+            [
+                {
+                    category: 'Chief Minister Electoral Process',
+                    question: "In the event of a hung assembly, what constitutional provision allows the Governor to use their discretion in appointing the Chief Minister?",
+                    options: ["Article 163", "Article 164", "Article 356", "Article 371"],
+                    correctAnswer: 1,
+                    explanation: "Article 164 of the Indian Constitution gives the Governor the discretion to appoint the Chief Minister. In a hung assembly situation, the Governor may use this provision to invite the leader of the party or coalition they believe can form a stable government."
+                },
+                {
+                    category: 'Chief Minister Electoral Process',
+                    question: "What is the maximum period a person can serve as Chief Minister without being a member of the state legislature?",
+                    options: ["3 months", "6 months", "9 months", "12 months"],
+                    correctAnswer: 1,
+                    explanation: "According to Article 164(4) of the Indian Constitution, a minister, including the Chief Minister, who is not a member of the state legislature can hold office for a maximum period of six consecutive months. Within this period, they must become a member of the legislature, or they cease to be a minister."
+                },
+                {
+                    category: 'Chief Minister Electoral Process',
+                    question: "Under what circumstances can the Governor dismiss a Chief Minister who enjoys majority support in the Assembly?",
+                    options: ["If the Chief Minister is corrupt", "If the state is under financial emergency", "If Article 356 is imposed", "The Governor cannot dismiss such a Chief Minister"],
+                    correctAnswer: 3,
+                    explanation: "A Governor cannot dismiss a Chief Minister who enjoys majority support in the Assembly. The Chief Minister holds office during the pleasure of the Governor, but this is subject to the Chief Minister maintaining the confidence of the house. If the Chief Minister has majority support, the Governor's role is largely ceremonial in this regard."
+                },
+                {
+                    category: 'Chief Minister Electoral Process',
+                    question: "What is the constitutional basis for the 'floor test' in determining the Chief Minister's majority?",
+                    options: ["Article 163", "Article 164", "Article 175", "It's a constitutional convention, not explicitly mentioned"],
+                    correctAnswer: 3,
+                    explanation: "The 'floor test' is not explicitly mentioned in the Indian Constitution. It is a constitutional convention that has evolved over time and has been upheld by the Supreme Court in various judgments. This test is used to determine whether the Chief Minister commands the confidence of the majority in the legislative assembly."
+                },
+                {
+                    category: 'Chief Minister Electoral Process',
+                    question: "In a coalition government, what legal principle determines the selection of the Chief Minister if the largest party's leader is not chosen?",
+                    options: ["First-past-the-post system", "Proportional representation", "Collective responsibility", "Composite floor test"],
+                    correctAnswer: 2,
+                    explanation: "The principle of collective responsibility, as mentioned in Article 164(2) of the Constitution, plays a crucial role in selecting the Chief Minister in a coalition government. The leader who can ensure collective responsibility of the Council of Ministers to the legislative assembly is typically chosen, even if they're not from the largest party."
+                }
+            ]
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let showExplanation = false;
+        let selectedAnswer = null;
+        let gameState = 'playing';
+        let categoryScores = {
+            'Chief Minister Electoral Process': 0
+        };
+        let currentQuestionSet = 0;
+        let questions = allQuestions[0];
+
+        function updateUI() {
+            const gameContent = document.getElementById('game-content');
+            const progressBar = document.getElementById('progress');
+            const scoreDisplay = document.getElementById('score-display');
+            const categoryDisplay = document.getElementById('category-display');
+
+            if (gameState === 'playing') {
+                progressBar.style.width = `${(currentQuestion / questions.length) * 100}%`;
+                scoreDisplay.textContent = `Score: ${score}/${questions.length}`;
+                categoryDisplay.textContent = `Category: ${questions[currentQuestion].category}`;
+
+                let content = `
+                    <div class="question">${questions[currentQuestion].question}</div>
+                    <div class="options">
+                        ${questions[currentQuestion].options.map((option, index) => `
+                            <button class="option" onclick="handleAnswer(${index})" ${showExplanation ? 'disabled' : ''}>
+                                ${option}
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
+
+                if (showExplanation) {
+                    content += `
+                        <div class="explanation">
+                            <p><strong>Explanation:</strong></p>
+                            <p>${questions[currentQuestion].explanation}</p>
+                            <button class="next-btn" onclick="nextQuestion()">Next Question</button>
+                        </div>
+                    `;
+                }
+
+                gameContent.innerHTML = content;
+
+                // Animate options sliding in
+                const options = document.querySelectorAll('.option');
+                options.forEach((option, index) => {
+                    option.style.animation = `slideIn 0.5s ease forwards ${index * 0.1}s`;
+                });
+            } else {
+                let content = `
+                    <h3>Game Completed!</h3>
+                    <p>Your total score: ${score}/${questions.length}</p>
+                    ${categories.map(category => `
+                        <p>${category}: ${categoryScores[category]}/${questions.filter(q => q.category === category).length}</p>
+                    `).join('')}
+                    <button class="restart-btn" onclick="restartGame()">Play Again</button>
+                `;
+
+                gameContent.innerHTML = content;
+            }
+        }
+
+        function handleAnswer(selectedOption) {
+            if (showExplanation) return; // Prevent multiple selections
+            
+            selectedAnswer = selectedOption;
+            const options = document.querySelectorAll('.option');
+            options.forEach((option, index) => {
+                option.classList.remove('correct', 'incorrect');
+                option.style.transform = 'scale(1)';
+                if (index === selectedOption) {
+                    if (selectedOption === questions[currentQuestion].correctAnswer) {
+                        option.classList.add('correct');
+                        score++;
+                        categoryScores[questions[currentQuestion].category]++;
+                        option.style.transform = 'scale(1.05)';
+                    } else {
+                        option.classList.add('incorrect');
+                        option.style.transform = 'scale(0.95)';
+                    }
+                }
+            });
+            
+            // Always show the correct answer
+            options[questions[currentQuestion].correctAnswer].classList.add('correct');
+            
+            showExplanation = true;
+            updateUI();
+        }
+
+        function nextQuestion() {
+            showExplanation = false;
+            selectedAnswer = null;
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                updateUI();
+            } else {
+                gameState = 'finished';
+                updateUI();
+            }
+        }
+
+        function restartGame() {
+            currentQuestionSet = (currentQuestionSet + 1) % allQuestions.length;
+            questions = allQuestions[currentQuestionSet];
+            currentQuestion = 0;
+            score = 0;
+            showExplanation = false;
+            selectedAnswer = null;
+            gameState = 'playing';
+            categoryScores = {
+                'Chief Minister Electoral Process': 0
+            };
+            updateUI();
+        }
+
+        // Initialize the game
+        updateUI();
+    </script>
+</body>
+</html>

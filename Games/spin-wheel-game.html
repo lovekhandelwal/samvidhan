@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sansthaein Aur Samvidhan - Spin the Wheel</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #001f3f 0%, #004080 100%);
+            color: #fff;
+        }
+        .container {
+            text-align: center;
+            background: linear-gradient(135deg, #002b5c 0%, #003366 100%);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 1000px;
+            width: 95%;
+        }
+        h1 {
+            color: #fff;
+            margin-bottom: 1rem;
+        }
+        .wheel-container {
+            position: relative;
+            margin-top: 20px;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto 2rem;
+        }
+        .wheel {
+            width: 100%;
+            height: 100%;
+            margin-top: 50px;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            transition: transform 5s cubic-bezier(0.25, 0.1, 0.25, 1);
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        }
+        .segment {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 33.33%, 50% 33.33%);
+            transform-origin: center;
+        }
+        .segment:nth-child(1) { transform: rotate(0deg); background-color: #FF5252; }
+        .segment:nth-child(2) { transform: rotate(60deg); background-color: #FF9800; }
+        .segment:nth-child(3) { transform: rotate(120deg); background-color: #FFEB3B; }
+        .segment:nth-child(4) { transform: rotate(180deg); background-color: #4CAF50; }
+        .segment:nth-child(5) { transform: rotate(240deg); background-color: #2196F3; }
+        .segment:nth-child(6) { transform: rotate(300deg); background-color: #9C27B0; }
+        .spin-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: white;
+            border: none;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            z-index: 10;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .spin-button:hover {
+            background-color: #f0f0f0;
+        }
+        .spin-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .pointer {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 20px solid #fff;
+            z-index: 20;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 5px;
+        }
+        #questionSection {
+            display: none;
+        }
+        #question {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        #answerInput {
+            margin-top: 10px;
+            padding: 5px;
+            width: 200px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+        }
+        #submitAnswer {
+            margin-top: 10px;
+            padding: 5px 10px;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        #feedback {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        #result h2 {
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        #result p {
+            font-size: 18px;
+            line-height: 1.5;
+        }
+
+        #question {
+            font-size: 25px;
+            margin-bottom: 15px;
+        }
+
+        #feedback {
+            font-size: 22px;
+        }
+
+        /* Player and Score */
+        #player-info-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            color: #f1c40f;
+        }
+        #player-info {
+            font-size: 1.2em;
+        }
+        #score {
+            font-size: 1.2em;
+        }
+
+        /* Welcome Screen */
+        #welcome-screen {
+            text-align: center;
+            background: linear-gradient(135deg, #002b5c 0%, #003366 100%);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        #name-form {
+            margin-top: 20px;
+        }
+
+        #name-input {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: none;
+            margin-right: 10px;
+        }
+
+        #start-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #start-button:hover {
+            background-color: #2980b9;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Welcome Screen -->
+    <div id="welcome-screen">
+        <h1>Welcome to Spin the Wheel Game!</h1>
+        <form id="name-form">
+            <input type="text" id="name-input" placeholder="Enter your name" required>
+            <button type="submit" id="start-button">Start Game</button>
+        </form>
+    </div>
+
+    <div class="container" style="display: none;">
+        <div id="player-info-container">
+            <div id="player-info"></div> <!-- Player's name will appear here -->
+            <div id="score">Score: 0</div> <!-- Score display -->
+        </div>
+
+        <h1>Spin The Wheel -: To know About Some Articles </h1>
+        <div class="wheel-container">
+            <div class="wheel">
+                <div class="segment"></div>
+                <div class="segment"></div>
+                <div class="segment"></div>
+                <div class="segment"></div>
+                <div class="segment"></div>
+                <div class="segment"></div>
+            </div>
+            <div class="pointer"></div>
+            <button class="spin-button" id="spinButton">SPIN</button>
+        </div>
+        <div id="result"></div>
+        <div id="questionSection">
+            <div id="question"></div>
+            <input type="text" id="answerInput" placeholder="Your answer">
+            <button id="submitAnswer">Submit Answer</button>
+            <div id="feedback"></div>
+            <!-- <button id="newGameButton" style="display: none;">New Game</button> -->
+        </div>    
+        <button id="newGameButton" style="display: none;">New Game</button>
+    </div>
+
+    <script>
+        let playerName = '';
+        let score = 0;
+    
+        const wheel = document.querySelector('.wheel');
+        const spinButton = document.getElementById('spinButton');
+        const result = document.getElementById('result');
+        const questionSection = document.getElementById('questionSection');
+        const questionElement = document.getElementById('question');
+        const answerInput = document.getElementById('answerInput');
+        const submitAnswer = document.getElementById('submitAnswer');
+        const feedback = document.getElementById('feedback');
+        const playerInfoElement = document.getElementById('player-info');
+        const scoreElement = document.getElementById('score');
+    
+        const segments = [
+            { 
+                name: "Article 79", 
+                content: "The Parliament consists of the President and two Houses: the Council of States (Rajya Sabha) and the House of the People (Lok Sabha).",
+                question: "What are the two Houses of the Indian Parliament?",
+                answer: "Rajya Sabha and Lok Sabha"
+            },
+            { 
+                name: "Article 124", 
+                content: "Establishment and Constitution of Supreme Court: There shall be a Supreme Court of India consisting of a Chief Justice and other judges.",
+                question: "Who heads the Supreme Court of India?",
+                answer: "Chief Justice"
+            },
+            { 
+                name: "Article 153", 
+                content: "The Governor: There shall be a Governor for each State. The Governor is appointed by the President and holds office during the pleasure of the President.",
+                question: "Who appoints the Governor of a State?",
+                answer: "President"
+            },
+            { 
+                name: "Article 74", 
+                content: "Council of Ministers to aid and advise President: There shall be a Council of Ministers with the Prime Minister at the head to aid and advise the President.",
+                question: "Who heads the Council of Ministers?",
+                answer: "Prime Minister"
+            },
+            { 
+                name: "Article 214", 
+                content: "High Courts for States: There shall be a High Court for each State.",
+                question: "What is the highest court in a State?",
+                answer: "High Court"
+            },
+            { 
+                name: "Article 52", 
+                content: "The President of India: There shall be a President of India who is the head of the state and supreme commander of the armed forces.",
+                question: "What is the role of the President of India in relation to the armed forces?",
+                answer: "Supreme Commander"
+            }
+        ];
+    
+        let canSpin = true;
+        let currentSegment = null;
+        let currentRotation = 0;
+    
+        spinButton.addEventListener('click', () => {
+            if (!canSpin) return;
+            canSpin = false;
+            spinButton.disabled = true;
+            questionSection.style.display = 'none';
+            result.innerHTML = '';
+            feedback.textContent = '';
+            const randomDegree = Math.floor(Math.random() * 360) + 1440; // At least 4 full spins
+            currentRotation += randomDegree;
+            wheel.style.transform = `rotate(${currentRotation}deg)`;
+            
+            setTimeout(() => {
+                const actualDegree = currentRotation % 360;
+                const segmentIndex = 5 - Math.floor(actualDegree / 60);
+                currentSegment = segments[segmentIndex];
+                result.innerHTML = `<h2>${currentSegment.name}</h2><p>${currentSegment.content}</p>`;
+                questionElement.textContent = currentSegment.question;
+                answerInput.value = '';
+                questionSection.style.display = 'block';
+                canSpin = true;
+                spinButton.disabled = false;
+            }, 5000);
+        });
+    
+        submitAnswer.addEventListener('click', () => {
+            if (!currentSegment) return;
+            const userAnswer = answerInput.value.trim().toLowerCase();
+            const correctAnswer = currentSegment.answer.toLowerCase();
+            if (userAnswer === correctAnswer) {
+                feedback.textContent = "Correct! Well done!";
+                feedback.style.color = "green";
+                score += 10;  // Increase score by 10 for each correct answer
+                scoreElement.textContent = `Score: ${score}`;
+    
+                // Save the score to the database after each correct answer
+                saveScore(playerName, score);
+
+                document.getElementById('newGameButton').style.display = 'block';  // Show "New Game" button
+                
+    
+            } else {
+                feedback.textContent = `Incorrect. The correct answer is: ${currentSegment.answer}`;
+                feedback.style.color = "red";
+            }
+        });
+    
+        // Handle starting the game after entering name
+        document.getElementById('name-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            playerName = document.getElementById('name-input').value.trim();
+            if (playerName) {
+                document.getElementById('welcome-screen').style.display = 'none';
+                document.querySelector('.container').style.display = 'block';
+                playerInfoElement.textContent = `Player: ${playerName}`;
+                score = 0; // Reset the score for the new player
+                scoreElement.textContent = `Score: ${score}`;
+                document.getElementById('newGameButton').style.display = 'none';
+                /*document.getElementById('newGameButton').style.display = 'block';*/
+                /*document.getElementById('newGameButton').addEventListener('click', resetGame);*/
+            }
+        });
+        function resetGame() {
+            playerName = '';
+            score = 0;
+            document.getElementById('welcome-screen').style.display = 'block';
+            document.querySelector('.container').style.display = 'none';
+            document.getElementById('name-input').value = ''; // Clear the input field
+            document.getElementById('score').textContent = 'Score: 0'; // Reset the score display
+        }
+
+        document.getElementById('newGameButton').addEventListener('click', resetGame);
+
+    
+        // Function to send the player's name and score to the backend
+        function saveScore(email, score) {
+            console.log('Saving score:', { email, score });
+            
+            fetch('http://localhost:3000/save-score', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, score })  // Correctly stringify the body
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.message);  // Log success message
+            })
+            .catch(error => {
+                console.error('Error saving score:', error);
+            });
+        }        
+
+        
+    </script>
+    
+</body>
+</html>

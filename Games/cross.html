@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Crossword Puzzle Game</title>
+    <style>
+        :root {
+            --body-color: linear-gradient(135deg, #001f3f 0%, #004080 100%);
+            --container-color: linear-gradient(135deg, #002b5c 0%, #003366 100%);
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: var(--body-color);
+            color: #ffffff;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            background: var(--container-color);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        .game-area {
+            display: flex;
+            gap: 40px;
+        }
+        .crossword {
+            display: grid;
+            grid-template-columns: repeat(12, 40px);
+            grid-gap: 1px;
+            background-color: #001f3f;
+            padding: 2px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        .cell {
+            width: 40px;
+            height: 40px;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            position: relative;
+            transition: all 0.3s ease;
+            border-radius: 5px;
+        }
+        .cell input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            text-align: center;
+            font-size: 20px;
+            text-transform: uppercase;
+            background-color: transparent;
+            outline: none;
+            color: #001f3f;
+        }
+        .cell::before {
+            content: attr(data-number);
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            font-size: 10px;
+            color: #004080;
+        }
+        .black {
+            background-color: #001f3f;
+        }
+        .clues {
+            max-width: 300px;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .clues h3 {
+            color: #ffffff;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+            margin-top: 0;
+        }
+        .clues ol {
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+        .clues li {
+            margin-bottom: 10px;
+            color: #e0e0e0;
+        }
+        .correct {
+            background-color: #a8e6cf;
+        }
+        .incorrect {
+            background-color: #ffaaa5;
+        }
+      /*  .highlight {
+            background-color: #ffd3b6;
+        }*/
+
+        #welcome-screen {
+            text-align: center;
+            background: var(--container-color);
+            background: #2980b9;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        #name-form {
+            margin-top: 20px;
+        }
+
+        #name-input {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: none;
+            margin-right: 10px;
+        }
+
+        #start-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #184d71;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #start-button:hover {
+            background-color: #2980b9;
+        }
+
+        #game-container {
+            display: none;
+        }
+
+        #player-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        #player-name, #player-score {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        #player-score {
+            color: #3498db;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        .pulse {
+            animation: pulse 0.5s;
+        }
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #3498db;
+        }
+    </style>
+</head>
+<body>
+    <div id="welcome-screen">
+        <h1>Welcome to the Crossword Puzzle Game!</h1>
+        <form id="name-form">
+            <input type="text" id="name-input" placeholder="Enter your name" required>
+            <button type="submit" id="start-button">Start Game</button>
+        </form>
+    </div>
+    
+    <div id="game-container" class="container">
+        <div class="title">Crossword Puzzle: Indian Government</div>
+        <div id="player-info">
+            <span id="player-name"></span>
+            <span id="player-score">Score: 0</span>
+        </div>
+        <div class="game-area">
+            <div class="crossword" id="crossword"></div>
+            <div class="clues">
+                <h3>Across</h3>
+                <ol>
+                    <li>The head of state of India</li>
+                    <li>Introduction to the Constitution, outlining its objectives.</li>
+                    <li>A system of government where citizens exercise power by voting</li>
+                <!-- </ol> -->
+                <h3>Down</h3>
+                <!-- <ol> -->
+                    <li>The branch of government responsible for implementing laws.</li>
+                    <li>The principal civil court of justice for a state or union territory.</li>
+                    <li>A form of government in which the head of state is an elected representative.</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+    <script>
+        const crosswordLayout = [
+            [0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0],
+            [0, 5, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0],
+            [0, 5, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0],
+            [0, 5, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0],
+            [0, 5, 0, 0, 0, 6, 0, 4, 0, 0, 0, 0],
+            [0, 5, 0, 1, 1, 1, 1, 4, 1, 1, 1, 1],
+            [0, 5, 0, 0, 0, 6, 0, 4, 0, 0, 0, 0],
+            [0, 5, 0, 0, 0, 6, 0, 4, 0, 0, 0, 0],
+            [2, 2, 2, 2, 2, 6, 2, 2, 0, 0, 0, 0],
+            [0, 5, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0],
+            [0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0]
+        ];
+        const answers = {
+            across: {
+                1: "PRESIDENT",
+                2: "PREAMBLE",
+                3: "DEMOCRACY"
+            },
+            down: {
+                4: "EXECUTIVE",
+                5: "HIGHCOURT",
+                6: "REPUBLIC"
+            }
+        };
+
+        function createCrossword() {
+            const crosswordElement = document.getElementById('crossword');
+            crosswordLayout.forEach((row, rowIndex) => {
+                row.forEach((cell, colIndex) => {
+                    const cellElement = document.createElement('div');
+                    cellElement.classList.add('cell');
+                    if (cell === 0) {
+                        cellElement.classList.add('black');
+                    } else {
+                        const input = document.createElement('input');
+                        input.type = 'text';
+                        input.maxLength = 1;
+                        input.dataset.row = rowIndex;
+                        input.dataset.col = colIndex;
+                        cellElement.appendChild(input);
+                        cellElement.setAttribute('data-number', cell);
+                    }
+                    crosswordElement.appendChild(cellElement);
+                });
+            });
+        }
+//new addd
+        let playerName = '';
+        let score = 0;
+
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const gameContainer = document.getElementById('game-container');
+        const nameForm = document.getElementById('name-form');
+        const nameInput = document.getElementById('name-input');
+        const playerNameDisplay = document.getElementById('player-name');
+        const playerScoreDisplay = document.getElementById('player-score');
+        
+        nameForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            playerName = nameInput.value.trim();
+            if (playerName) {
+                document.getElementById('welcome-screen').style.display = 'none';
+                gameContainer.style.display = 'block';
+                playerNameDisplay.textContent = `Player: ${playerName}`;
+                /*createCrossword();*/
+            }
+        });
+
+        function updateScore(isCorrect) {
+            if (isCorrect) {
+                score += 10;
+                playerScoreDisplay.textContent = `Score: ${score}`;
+            }
+        }
+//till yet
+
+        function checkFullAnswer(direction, number) {
+            const answer = answers[direction][number];
+            let correct = true;
+
+    // Loop over each letter of the answer
+            for (let i = 0; i < answer.length; i++) {
+                let row, col;
+
+                if (direction === 'across') {
+                    row = crosswordLayout.findIndex(r => r.includes(parseInt(number)));
+                    col = crosswordLayout[row].indexOf(parseInt(number)) + i;
+                } else if (direction === 'down') {
+                    col = crosswordLayout.map(row => row.indexOf(parseInt(number))).find(colIndex => colIndex !== -1);
+                    row = crosswordLayout.findIndex(r => r[col] === parseInt(number)) + i;
+                }
+
+                const input = document.querySelector(`input[data-row="${row}"][data-col="${col}"]`);
+                if (!input || input.value.toUpperCase() !== answer[i]) {
+                    correct = false;
+                    break;
+                }
+            }
+
+            return correct;
+        }
+
+
+        function checkAnswer(input) {
+            const row = parseInt(input.dataset.row);
+            const col = parseInt(input.dataset.col);
+            const value = input.value.toUpperCase();
+            let correct = false;
+            let number, direction;
+
+            for (const dir in answers) {
+                for (const num in answers[dir]) {
+                    const answer = answers[dir][num];
+                    const index = dir === 'across' ? col - crosswordLayout[row].indexOf(parseInt(num)) : row - crosswordLayout.findIndex(r => r[col] === parseInt(num));
+                    if (index >= 0 && index < answer.length && answer[index] === value) {
+                        correct = true;
+                        number = num;
+                        direction = dir;
+                        break;
+                    }
+                }
+                if (correct) break;
+            }
+
+            input.parentElement.classList.remove('correct', 'incorrect');
+            input.parentElement.classList.add('pulse');
+
+            if (value) {
+                if (correct) {
+                    playSound('correct');
+                    input.parentElement.classList.add('correct');
+
+            // Check if the full word is correct and update the score
+                    if (checkFullAnswer(direction, number)) {
+                        updateScore(true);
+                    }
+                } else {
+                    playSound('incorrect');
+                    input.parentElement.classList.add('incorrect');
+                }
+            }
+
+            setTimeout(() => {
+                input.parentElement.classList.remove('pulse');
+            }, 500);
+        }
+
+
+
+
+        function highlightWord(input) {
+            const row = parseInt(input.dataset.row);
+            const col = parseInt(input.dataset.col);
+            const cells = document.querySelectorAll('.cell');
+            cells.forEach(cell => cell.classList.remove('highlight'));
+            
+            // Highlight across
+            for (let i = 0; i < 12; i++) {
+                const cell = document.querySelector(`.cell input[data-row="${row}"][data-col="${i}"]`);
+                if (cell) {
+                    cell.parentElement.classList.add('highlight');
+                } else {
+                    break;
+                }
+            }
+            
+            // Highlight down
+            for (let i = 0; i < 13; i++) {
+                const cell = document.querySelector(`.cell input[data-row="${i}"][data-col="${col}"]`);
+                if (cell) {
+                    cell.parentElement.classList.add('highlight');
+                } else {
+                    break;
+                }
+            }
+        }
+
+        function playSound(type) {
+            const audio = new Audio(type === 'correct' ? 'https://example.com/correct.mp3' : 'https://example.com/incorrect.mp3');
+            audio.play().catch(e => console.log("Audio play failed:", e));
+        }
+
+        createCrossword();
+        document.addEventListener('input', (e) => {
+            if (e.target.tagName === 'INPUT') {
+                checkAnswer(e.target);
+            }
+        });
+        document.addEventListener('focus', (e) => {
+            if (e.target.tagName === 'INPUT') {
+                highlightWord(e.target);
+            }
+        }, true);
+    </script>
+</body>
+</html>

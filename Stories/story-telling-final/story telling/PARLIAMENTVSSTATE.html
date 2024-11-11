@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ravi's Initiative & Audio Playback</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #002144;
+            color: white;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+        .content-wrapper {
+            background-color: #002C5E;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #fff;
+        }
+        .audio-icon {
+            font-size: 50px;
+            cursor: pointer;
+            color: #007bff;
+            margin-right: 10px;
+        }
+        .audio-label {
+            font-size: 20px;
+            margin-top: 10px;
+        }
+        .audio-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 40px;
+            gap: 30px;
+        }
+        .audio-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .quiz-section {
+            text-align: center;
+            margin-top: 50px;
+        }
+        .quiz-button {
+            background-color: #28a745;
+            color: white;
+            padding: 15px 30px;
+            font-size: 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .quiz-button:hover {
+            background-color: #218838;
+        }
+        .language-switcher {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+        }
+    </style>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</head>
+<body>
+    <!-- Google Translate Widget -->
+    <div class="language-switcher">
+        <div id="google_translate_element"></div>
+    </div>
+
+    <div class="content-wrapper">
+        <h1>PARLIAMENT VS STATE-LEGISLATURE</h1>
+
+        <p>In the vibrant democracy of India, the central government in New Delhi and the state governments across the country worked together to govern the nation. To understand how they operated differently, let’s follow the story of two friends, Asha and Ramesh.
+</p>
+
+        <p>Asha was a newly elected Member of Parliament (MP) in the Lok Sabha, the lower house of India’s national Parliament. She worked in New Delhi, where the Union Parliament was located. Meanwhile, Ramesh was elected as a Member of the Legislative Assembly (MLA) in his home state of Rajpur. He worked in the State Legislative Assembly, also known as the Vidhan Sabha, in the state capital.
+</p>
+
+        <p>One day, Asha and Ramesh decided to meet and compare their experiences. Asha explained how the Union Parliament worked. "In Delhi, the Parliament has two houses," she said. "The Lok Sabha, where I work, has members directly elected by the people from all over India. We make laws on national issues like defense, foreign policy, and finance. The Rajya Sabha, the upper house, represents the states. Members there are mostly elected by state legislatures. Both houses must agree on most laws for them to pass."
+</p>
+
+        <p>Ramesh nodded and shared his experience. "In Rajpur, we have a state legislature. Our Vidhan Sabha is similar to your Lok Sabha, with members directly elected by the people of the state. But not every state has two houses. Only a few states, like ours, have a Vidhan Parishad, which is like your Rajya Sabha. It reviews laws but doesn’t have as much power as the Vidhan Sabha."
+</p>
+
+        <p>Asha then pointed out another difference. "We handle issues that affect the entire country, like passing the national budget or declaring emergencies. But your state legislature deals with more local matters, like police, public health, and agriculture."
+</p>
+
+        <p>Ramesh agreed. "That’s right! Our laws are focused on what directly affects people in our state. For instance, we recently passed a law to improve our state’s education system, which wouldn’t be handled by the Union Parliament."
+</p>
+
+	<p>Asha and Ramesh realized that while both the Union Parliament and the state legislatures worked to create laws and govern, their scopes and functions were different. The Union Parliament addressed nationwide issues, with its laws impacting all of India, while state legislatures like Ramesh’s dealt with more local concerns, catering to the specific needs of their states.
+</p>
+	<p>By understanding these differences, Asha and Ramesh saw how India’s democracy ensured that both national and local issues were addressed, balancing the powers between the Union and the states.</p>
+
+        <!-- Audio Section -->
+        <div class="audio-section">
+            <div class="audio-item">
+                <span class="audio-icon" onclick="playAudio('hindi')">🔊</span>
+                <span class="audio-label">Hindi</span>
+            </div>
+            <div class="audio-item">
+                <span class="audio-icon" onclick="playAudio('telugu')">🔊</span>
+                <span class="audio-label">Telugu</span>
+            </div>
+            <div class="audio-item">
+                <span class="audio-icon" onclick="playAudio('english')">🔊</span>
+                <span class="audio-label">English</span>
+            </div>
+        </div>
+
+        <!-- Quiz Section -->
+        <div class="quiz-section">
+            <button class="quiz-button" onclick="window.location.href='PVSSL.html'">Take the Quiz</button>
+        </div>
+    </div>
+
+    <!-- Audio Files -->
+    <audio id="hindi" src="(HINDI)HOW PARLIAMENT OF STATE IS DIFFERENT FROM UNION.mp3"></audio>
+    <audio id="telugu" src="(TELUGU)HOW PARLIAMENT OF STATE IS DIFFERENT FROM UNION.mp3"></audio>
+    <audio id="english" src="(ENGLISH)HOW PARLIAMENT OF STATE IS DIFFERENT FROM UNION.mp3"></audio>
+
+    <script>
+        function playAudio(language) {
+            var audio = document.getElementById(language);
+            if (audio.paused) {
+                audio.play();
+            } else {
+                audio.pause();
+            }
+        }
+    </script>
+</body>
+</html>

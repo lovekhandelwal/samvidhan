@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pass the Bill - Indian Parliament (Drag and Drop)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+        :root {
+            --body-color: linear-gradient(135deg, #001f3f 0%, #004080 100%);
+            --container-color: linear-gradient(135deg, #002b5c 0%, #003366 100%);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: var(--body-color);
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            color: #ffffff;
+        }
+
+        .container {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 1000px;
+            width: 100%;
+            background: var(--container-color);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            display: none; /* Initially hidden */
+        }
+
+        h1 {
+            color: #ffffff;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            font-size: 2.5rem;
+        }
+
+        #gameArea {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            height: 600px;
+            margin: 20px auto;
+            border: none;
+            border-radius: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .stage {
+            width: 180px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            border: 2px solid #3498db;
+            border-radius: 15px;
+            background-color: rgba(236, 240, 241, 0.1);
+            font-size: 14px;
+            transition: all 0.3s ease;
+            padding: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            color: #ffffff;
+        }
+
+        .stage.completed {
+            background-color: #2ecc71;
+            color: white;
+            border-color: #27ae60;
+        }
+
+        #bill {
+            position: absolute;
+            width: 80px;
+            height: 100px;
+            background-color: #f1c40f;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #2c3e50;
+            font-weight: bold;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+            cursor: move;
+            user-select: none;
+            transform: rotate(-5deg);
+            transition: transform 0.3s ease;
+        }
+
+        #bill:hover {
+            transform: rotate(0deg) scale(1.05);
+        }
+
+        #bill::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            width: 60px;
+            height: 20px;
+            background-color: #e67e22;
+            border-radius: 10px 10px 0 0;
+        }
+
+        #bill::after {
+            content: "BILL";
+            position: absolute;
+            top: 15px;
+            font-size: 14px;
+            color: #34495e;
+        }
+
+        #billText {
+            margin-top: 30px;
+            font-size: 12px;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        #message {
+            position: absolute;
+            bottom: 100px; /* Adjust this to move the message above the reset button */
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 18px;
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 100%;
+            margin-top: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        #resetButton {
+            margin-top: 70px;
+            padding: 12px 24px;
+            font-size: 16px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        #resetButton:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        #player-info-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        #player-info {
+            font-size: 1.2em;
+            color: #f1c40f;
+        }
+
+        #score {
+            font-size: 1.2em;
+            color: #f1c40f;
+        }
+
+        /* Pop-up for "Well Done" */
+        #popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(46, 204, 113, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            color: white;
+            z-index: 1000;
+            font-size: 1.5rem;
+        }
+
+        /* Welcome Screen */
+        #welcome-screen {
+            text-align: center;
+            background: var(--container-color);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #name-form {
+            margin-top: 20px;
+        }
+
+        #name-input {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: none;
+            margin-right: 10px;
+        }
+
+        #start-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #start-button:hover {
+            background-color: #2980b9;
+        }
+
+        @media (max-width: 850px) {
+            #gameArea {
+                height: 800px;
+            }
+
+            .stage {
+                width: 150px;
+                font-size: 12px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .stage {
+                width: 120px;
+                height: 50px;
+                font-size: 10px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Welcome Screen -->
+    <div id="welcome-screen">
+        <h1>Welcome to Pass the Bill Game!</h1>
+        <form id="name-form">
+            <input type="text" id="name-input" placeholder="Enter your name" required>
+            <button type="submit" id="start-button">Start Game</button>
+        </form>
+    </div>
+
+    <div class="container">
+        <h1>Pass the Bill through Indian Parliament</h1>
+
+        <!-- Player Info and Score Container -->
+        <div id="player-info-container">
+            <div id="player-info"></div> <!-- Player's name will appear here -->
+            <div id="score">Score: 0</div> <!-- Score display -->
+        </div>
+
+        <div id="gameArea">
+            <div id="bill" draggable="true">
+                <div id="billText">Proposed Law</div>
+            </div>
+
+            <div class="stage" id="firstReadingLS">First Reading (Lok Sabha)</div>
+            <div class="stage" id="secondReadingLS">Second Reading (Lok Sabha)</div>
+            <div class="stage" id="committeeStageLS">Committee Stage (Lok Sabha)</div>
+            <div class="stage" id="considerationStageLS">Consideration Stage (Lok Sabha)</div>
+            <div class="stage" id="thirdReadingLS">Third Reading (Lok Sabha)</div>
+            <div class="stage" id="firstReadingRS">First Reading (Rajya Sabha)</div>
+            <div class="stage" id="secondReadingRS">Second Reading (Rajya Sabha)</div>
+            <div class="stage" id="committeeStageRS">Committee Stage (Rajya Sabha)</div>
+            <div class="stage" id="considerationStageRS">Consideration Stage (Rajya Sabha)</div>
+            <div class="stage" id="thirdReadingRS">Third Reading (Rajya Sabha)</div>
+            <div class="stage" id="presidentAssent">President Assent</div>
+        </div>
+
+        <p id="message">Drag the Bill to the first stage: First Reading (Lok Sabha)</p>
+        <button id="resetButton" onclick="resetGame()">Reset Game</button>
+    </div>
+
+    <!-- "Well Done" Pop-up -->
+    <div id="popup">
+        <p>Well Done! You've successfully passed the bill through Parliament!</p>
+    </div>
+
+    <script>
+        let playerName = '';
+        let score = 0;
+
+        const stages = [
+            { id: 'firstReadingLS', top: 20, left: 50, text: 'First Reading in Lok Sabha: The Bill is introduced...' },
+            { id: 'secondReadingLS', top: 180, left: 50, text: 'Second Reading in Lok Sabha: General discussion on the Bill...' },
+            { id: 'committeeStageLS', top: 100, left: 50, text: 'Committee Stage in Lok Sabha: Detailed clause-by-clause examination...' },
+            { id: 'considerationStageLS', top: 260, left: 50, text: 'Consideration Stage in Lok Sabha: Amendments are moved and voted upon...' },
+            { id: 'thirdReadingLS', top: 340, left: 50, text: 'Third Reading in Lok Sabha: Final discussion and voting...' },
+            { id: 'firstReadingRS', top: 100, left: 570, text: 'First Reading in Rajya Sabha: The Bill is introduced...' },
+            { id: 'secondReadingRS', top: 20, left: 570, text: 'Second Reading in Rajya Sabha: General discussion on the Bill...' },
+            { id: 'committeeStageRS', top: 260, left: 570, text: 'Committee Stage in Rajya Sabha: Detailed clause-by-clause examination...' },
+            { id: 'thirdReadingRS', top: 340, left: 570, text: 'Third Reading in Rajya Sabha: Final discussion and voting...' },
+            { id: 'considerationStageRS', top: 180, left: 570, text: 'Consideration Stage in Rajya Sabha: Amendments are moved and voted upon...' },
+            { id: 'presidentAssent', top: 450, left: 310, text: 'President\'s Assent: The Bill is approved and becomes law!' }
+        ];
+
+        const initialBillPosition = { top: 250, left: 350 };
+        const billElement = document.getElementById('bill');
+        const messageElement = document.getElementById('message');
+        const scoreElement = document.getElementById('score');
+        const popupElement = document.getElementById('popup');
+        const playerInfoElement = document.getElementById('player-info');
+
+        // Position the bill initially
+        billElement.style.top = initialBillPosition.top + 'px';
+        billElement.style.left = initialBillPosition.left + 'px';
+
+        // Position stages
+        stages.forEach(stage => {
+            const element = document.getElementById(stage.id);
+            element.style.top = stage.top + 'px';
+            element.style.left = stage.left + 'px';
+        });
+
+        let currentStage = 0;
+
+        // Handle drag events for the bill
+        billElement.addEventListener('dragstart', dragStart);
+        stages.forEach((stage, index) => {
+            const stageElement = document.getElementById(stage.id);
+            stageElement.addEventListener('dragover', dragOver);
+            stageElement.addEventListener('drop', () => drop(stage.id, index));
+        });
+
+        function dragStart(e) {
+            e.dataTransfer.setData('text', e.target.id);
+        }
+
+        function dragOver(e) {
+            e.preventDefault();
+        }
+
+        function drop(stageId, index) {
+            if (index === currentStage) {
+                const stageElement = document.getElementById(stageId);
+                stageElement.classList.add('completed');
+                billElement.style.top = stageElement.style.top;
+                billElement.style.left = stageElement.style.left;
+                messageElement.textContent = stages[index].text;
+                score += 10;  // Increase score by 10 for each correct stage
+                scoreElement.textContent = `Score: ${score}`;
+                currentStage++;
+                if (currentStage === stages.length) {
+                    // Show the "Well Done" popup
+                    messageElement.textContent = 'Congratulations! The Bill has passed all stages and is now law.';
+                    popupElement.style.display = 'block';
+                }
+            } else {
+                messageElement.textContent = 'Please follow the correct sequence.';
+            }
+        }
+
+        // Handle resetting the game
+        function resetGame() {
+            currentStage = 0;
+            score = 0;
+            messageElement.textContent = 'Drag the Bill to the first stage: First Reading (Lok Sabha)';
+            scoreElement.textContent = 'Score: 0';
+            billElement.style.top = initialBillPosition.top + 'px';
+            billElement.style.left = initialBillPosition.left + 'px';
+            popupElement.style.display = 'none';
+            stages.forEach(stage => {
+                const stageElement = document.getElementById(stage.id);
+                stageElement.classList.remove('completed');
+            });
+        }
+
+        // Handle starting the game after entering name
+        document.getElementById('name-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            playerName = document.getElementById('name-input').value.trim();
+            if (playerName) {
+                document.getElementById('welcome-screen').style.display = 'none';
+                document.querySelector('.container').style.display = 'block';
+                playerInfoElement.textContent = `Player: ${playerName}`;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Constitutional Trivia Game: Prime Minister vs President</title>
+    <style>
+          :root {
+            --body-color: linear-gradient(135deg, #001f3f 0%, #004080 100%);
+            --container-color: linear-gradient(135deg, #002b5c 0%, #003366 100%);
+        }
+        body {
+            
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 100%;
+            max-width: 600px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s ease forwards;
+        }
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .card-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .card-header h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        .progress {
+            height: 100%;
+            background-color: #4caf50;
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+        .card-content {
+            margin-bottom: 20px;
+        }
+        .question {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option {
+            padding: 10px;
+            background-color: #e0e0e0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+        .option:hover {
+            background-color: #d0d0d0;
+        }
+        .option.correct {
+            background-color: #4caf50;
+            color: white;
+        }
+        .option.incorrect {
+            background-color: #f44336;
+            color: white;
+        }
+        .explanation {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+        }
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .next-btn, .restart-btn {
+            padding: 10px 20px;
+            background-color: #2196f3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .next-btn:hover, .restart-btn:hover {
+            background-color: #1976d2;
+            transform: scale(1.05);
+        }
+        .score, .category {
+            display: flex;
+            align-items: center;
+        }
+        .icon {
+            margin-right: 5px;
+        }
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="card-header">
+            <h2>Constitutional Trivia Game: Prime Minister vs President</h2>
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+        </div>
+        <div class="card-content" id="game-content">
+            <!-- Question and options will be inserted here -->
+        </div>
+        <div class="card-footer">
+            <div class="score">
+                <span class="icon">✅</span>
+                <span id="score-display">Score: 0/0</span>
+            </div>
+            <div class="category">
+                <span class="icon">❓</span>
+                <span id="category-display">Category: </span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const categories = ['Prime Minister vs President'];
+
+        const allQuestions = [
+            [
+                {
+                    category: 'Prime Minister vs President',
+                    question: "Which constitutional provision allows the President to return a bill for reconsideration, a power not available to the Prime Minister?",
+                    options: ["Article 111", "Article 74", "Article 75", "Article 123"],
+                    correctAnswer: 0,
+                    explanation: "Article 111 of the Indian Constitution empowers the President to return a bill (other than a Money Bill) for reconsideration to the Parliament. This 'pocket veto' power is not available to the Prime Minister. However, if the bill is passed again by the Parliament, with or without amendments, the President must give assent to it."
+                },
+                {
+                    category: 'Prime Minister vs President',
+                    question: "In the context of emergency powers, what fundamental difference exists between the roles of the Prime Minister and the President?",
+                    options: ["The PM declares emergencies, the President approves", "The President declares emergencies on PM's advice", "The PM has no role in emergency declarations", "The President can declare emergencies without PM's advice"],
+                    correctAnswer: 1,
+                    explanation: "A key difference in emergency powers is that the President formally declares emergencies under Articles 352, 356, and 360, but only on the written advice of the Union Cabinet headed by the Prime Minister. The Prime Minister plays a crucial role in initiating and advising on emergencies, but the formal declaration power rests with the President, highlighting the interconnected yet distinct roles of these offices."
+                },
+                {
+                    category: 'Prime Minister vs President',
+                    question: "How does the appointment process differ for the Prime Minister and the President?",
+                    options: ["Both are directly elected", "PM is appointed by President, President by Electoral College", "President is appointed by PM, PM by Lok Sabha", "PM is elected by Lok Sabha, President by Electoral College"],
+                    correctAnswer: 3,
+                    explanation: "The appointment processes for the Prime Minister and President are fundamentally different. The Prime Minister is typically the leader of the majority party or coalition in the Lok Sabha and is appointed by the President. The President, on the other hand, is elected by an Electoral College consisting of elected members of both Houses of Parliament and the Legislative Assemblies of the states. This reflects the different nature of their roles - the PM as head of government and the President as head of state."
+                },
+                {
+                    category: 'Prime Minister vs President',
+                    question: "What unique constitutional power does the President have in relation to the Council of Ministers that the Prime Minister doesn't possess?",
+                    options: ["Appointing ministers", "Dismissing the entire Council", "Seeking information about administrative decisions", "Chairing Cabinet meetings"],
+                    correctAnswer: 2,
+                    explanation: "Under Article 78(b) of the Indian Constitution, the President has the unique power to seek information from the Prime Minister regarding administrative decisions and legislative proposals. This power is not available to the Prime Minister. It allows the President to stay informed about governmental affairs and potentially offer advice, though the President is generally bound by the aid and advice of the Council of Ministers headed by the Prime Minister."
+                },
+                {
+                    category: 'Prime Minister vs President',
+                    question: "In the context of diplomatic relations, how do the roles of the Prime Minister and President differ constitutionally?",
+                    options: ["PM handles all diplomacy, President has no role", "President is head of state for diplomatic purposes, PM handles policy", "President handles all diplomacy, PM has no role", "Both have equal diplomatic roles"],
+                    correctAnswer: 1,
+                    explanation: "In diplomatic relations, the President and Prime Minister have distinct yet complementary roles. As the head of state, the President is the formal representative of India in international relations, receiving credentials of foreign diplomats and signing international treaties. However, the Prime Minister, as head of government, is responsible for formulating and executing foreign policy. While the President's role is largely ceremonial in this context, the Prime Minister actively engages in diplomatic negotiations and policy-making, showcasing the nuanced separation of powers in India's parliamentary system."
+                }
+            ]
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let showExplanation = false;
+        let selectedAnswer = null;
+        let gameState = 'playing';
+        let categoryScores = {
+            'Prime Minister vs President': 0
+        };
+        let currentQuestionSet = 0;
+        let questions = allQuestions[0];
+
+        function updateUI() {
+            const gameContent = document.getElementById('game-content');
+            const progressBar = document.getElementById('progress');
+            const scoreDisplay = document.getElementById('score-display');
+            const categoryDisplay = document.getElementById('category-display');
+
+            if (gameState === 'playing') {
+                progressBar.style.width = `${(currentQuestion / questions.length) * 100}%`;
+                scoreDisplay.textContent = `Score: ${score}/${questions.length}`;
+                categoryDisplay.textContent = `Category: ${questions[currentQuestion].category}`;
+
+                let content = `
+                    <div class="question">${questions[currentQuestion].question}</div>
+                    <div class="options">
+                        ${questions[currentQuestion].options.map((option, index) => `
+                            <button class="option" onclick="handleAnswer(${index})" ${showExplanation ? 'disabled' : ''}>
+                                ${option}
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
+
+                if (showExplanation) {
+                    content += `
+                        <div class="explanation">
+                            <p><strong>Explanation:</strong></p>
+                            <p>${questions[currentQuestion].explanation}</p>
+                            <button class="next-btn" onclick="nextQuestion()">Next Question</button>
+                        </div>
+                    `;
+                }
+
+                gameContent.innerHTML = content;
+
+                // Animate options sliding in
+                const options = document.querySelectorAll('.option');
+                options.forEach((option, index) => {
+                    option.style.animation = `slideIn 0.5s ease forwards ${index * 0.1}s`;
+                });
+            } else {
+                let content = `
+                    <h3>Game Completed!</h3>
+                    <p>Your total score: ${score}/${questions.length}</p>
+                    ${categories.map(category => `
+                        <p>${category}: ${categoryScores[category]}/${questions.filter(q => q.category === category).length}</p>
+                    `).join('')}
+                    <button class="restart-btn" onclick="restartGame()">Play Again</button>
+                `;
+
+                gameContent.innerHTML = content;
+            }
+        }
+
+        function handleAnswer(selectedOption) {
+            if (showExplanation) return; // Prevent multiple selections
+            
+            selectedAnswer = selectedOption;
+            const options = document.querySelectorAll('.option');
+            options.forEach((option, index) => {
+                option.classList.remove('correct', 'incorrect');
+                option.style.transform = 'scale(1)';
+                if (index === selectedOption) {
+                    if (selectedOption === questions[currentQuestion].correctAnswer) {
+                        option.classList.add('correct');
+                        score++;
+                        categoryScores[questions[currentQuestion].category]++;
+                        option.style.transform = 'scale(1.05)';
+                    } else {
+                        option.classList.add('incorrect');
+                        option.style.transform = 'scale(0.95)';
+                    }
+                }
+            });
+            
+            // Always show the correct answer
+            options[questions[currentQuestion].correctAnswer].classList.add('correct');
+            
+            showExplanation = true;
+            updateUI();
+        }
+
+        function nextQuestion() {
+            showExplanation = false;
+            selectedAnswer = null;
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                updateUI();
+            } else {
+                gameState = 'finished';
+                updateUI();
+            }
+        }
+
+        function restartGame() {
+            currentQuestionSet = (currentQuestionSet + 1) % allQuestions.length;
+            questions = allQuestions[currentQuestionSet];
+            currentQuestion = 0;
+            score = 0;
+            showExplanation = false;
+            selectedAnswer = null;
+            gameState = 'playing';
+            categoryScores = {
+                'Prime Minister vs President': 0
+            };
+            updateUI();
+        }
+
+        // Initialize the game
+        updateUI();
+    </script>
+</body>
+</html>
